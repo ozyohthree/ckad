@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: my-app
+  name: my-app-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+      version: v2
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: my-app
+        version: v2
+    spec:
+      volumes:
+      - name: vol
+        emptyDir: {}
+      containers:
+      - image: nginx
+        name: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: vol
+          mountPath: /usr/share/nginx/html
+      initContainers:
+      - name: install
+        image: busybox:1.28
+        command:
+        - /bin/sh
+        - -c
+        - "echo version-2 > /work-dir/index.html"
+        volumeMounts:
+        - name: vol
+          mountPath: "/work-dir"
+

@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mycj
+spec:
+  schedule: "30 21 * * *"
+  jobtemplate:
+    spec:
+      parallelism: 2
+      completions: 3
+      backoffLimit: 25
+      template:
+        spec:
+          containers:
+          - name: mycontainer
+            image: someimage

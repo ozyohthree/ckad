@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: myjob
+  labels:
+    tier: frontend
+spec:
+  completions: 3
+  backoffLimit: 15
+  parallelism: 3
+  template:
+    spec:
+      containers:
+        name: my-container
+        image: myimage:version1
+      restartPolicy: Never

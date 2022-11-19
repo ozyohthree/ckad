@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: myconfigpod
+  name: myconfigpod
+spec:
+  containers:
+  - image: httpd
+    name: myconfigpod
+    env:
+    - name: key1
+      value: value1
+    - name: key2 
+      value: value2
+    - name: key3
+      value: value3
+    - name: key4 
+      value: value4

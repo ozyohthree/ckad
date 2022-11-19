@@ -1,0 +1,24 @@
+
+# kubectl taint nodes node01 spray=mortein:NoSchedule
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: bee
+  name: bee
+spec:
+  tolerations:
+   - key: spray
+     value: mortein
+     effect: NoSchedule
+     operator: Equal
+  containers:
+  - image: nginx
+    name: bee
+    resources: 
+      limits:
+        memory: "128Mi"
+        cpu: 100m
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

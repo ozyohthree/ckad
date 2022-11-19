@@ -1,0 +1,142 @@
+
+Q1
+Create a deployment manifest file called my-webapp using the imperative command:-
+
+kubectl create deployment my-webapp --image=nginx --replicas=2 --dry-run=client -oyaml > my-webapp.yaml
+
+now, add given labels which is tier: frontend:-
+
+# Open with vi/nano editor
+vi my-webapp.yaml
+Final manifest file to create a deployment called my-webapp looks like as follows:-
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    tier: frontend
+    app: my-webapp
+  name: my-webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-webapp
+  template:
+    metadata:
+      labels:
+        app: my-webapp
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+
+
+# then run the 
+kubectl create -f my-webapp.yaml 
+#to create a deployment.
+
+# To expose the deployment as a node port service using the imperative command:-
+
+kubectl expose deployment my-webapp --name front-end-service --type NodePort --port 80 --dry-run=client -o yaml > front-end-service.yaml
+
+#now, add the nodePort field under the ports section as follows:-
+
+ports:
+ - port: 80
+   protocol: TCP
+   targetPort: 80
+   nodePort: 30083
+then run the 
+kubectl apply -f front-end-service.yaml to create a node port service.
+Verify it using the kubectl get command:-
+
+kubectl get service
+
+Q2
+
+To add a taint to the node node01 using the imperative command:-
+
+kubectl taint node node01 app_type=alpha:NoSchedule
+Verify it using the kubectl describe command:-
+
+root@controlplane:~$ kubectl describe node node01 | grep -i app_type
+Now, create a pod manifest file called alpha using the imperative command:-
+
+kubectl run alpha --image=redis --dry-run=client -o yaml > alpha.yaml
+and add rules under the spec.tolerations field as follows:
+
+tolerations:
+  - effect: NoSchedule
+    key: app_type
+    value: alpha
+
+So final manifest file to create a pod called alpha with tolerations rules as follows:-
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: alpha
+  name: alpha
+spec:
+  tolerations:
+  - effect: NoSchedule
+    key: app_type
+    value: alpha
+  containers:
+  - image: redis
+    name: alpha
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  
+To check the pod has been successfully deployed on the node node01, using -o wide flag:-
+
+kubectl get pods -o wide
+
+
+Q7
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: whalesay
+spec:
+  completions: 10
+  backoffLimit: 6
+  template:
+    metadata:
+      creationTimestamp: null
+    spec:
+      containers:
+      - command:
+        - sh 
+        - -c
+        - "cowsay I am going to ace CKAD!"
+        image: docker/whalesay
+        name: whalesay
+      restartPolicy: Never
+
+  
+Q8
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: multi-pod
+  name: multi-pod
+spec:
+  containers:
+  - image: nginx
+    name: jupiter
+    env:
+    - name: type
+      value: planet
+  - image: busybox
+    name: europa
+    command: ["/bin/sh","-c","sleep 4800"]
+    env:
+     - name: type
+       value: moon

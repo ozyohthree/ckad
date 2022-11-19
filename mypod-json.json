@@ -1,0 +1,23 @@
+{
+    "kind": "Pod",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "mypod",
+        "creationTimestamp": null,
+        "labels": {
+            "run": "mypod"
+        }
+    },
+    "spec": {
+        "containers": [
+            {
+                "name": "mypod",
+                "image": "nginx",
+                "resources": {}
+            }
+        ],
+        "restartPolicy": "Always",
+        "dnsPolicy": "ClusterFirst"
+    },
+    "status": {}
+}
