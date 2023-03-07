@@ -3,23 +3,32 @@ kind: Pod
 metadata:
   creationTimestamp: null
   labels:
-    run: multi-pod
-  name: multi-pod
+    run: multi
+  name: multi
 spec:
+  volumes:
+  - name: vol
+    emptyDir: {}
   containers:
   - command:
     - /bin/sh
     - -c
-    - echo hello;sleep 3600
+    - sleep 3600
     image: busybox
-    name: cont1
+    name: coontainer1
+    volumeMounts:
+    - name: vol
+      mountPath: /etc/foo
     resources: {}
   - command:
     - /bin/sh
     - -c
-    - echo hello;sleep 3600
+    - sleep 3600
     image: busybox
-    name: cont2
+    name: container2
+    volumeMounts:
+    - name: vol
+      mountPath: /etc/foo
     resources: {}
   dnsPolicy: ClusterFirst
   restartPolicy: Never

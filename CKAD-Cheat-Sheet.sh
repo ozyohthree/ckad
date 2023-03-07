@@ -15,6 +15,7 @@ alias kdr='kubectl -o yaml --dry-run=client ' .  # run commands in dry run mode 
 alias kgp="k get pods "
 alias kgpy="k get pods -o yaml "
 alias krf="kubect replace --force -f "
+alias kaf="k apply -f"
 
 VIM Prep
 vim ~/.vimrc   # then add:
@@ -411,7 +412,12 @@ $ NGINX_PODIP=$(k get po nginx -o jsonpath='{.status.podIP}')
 
 k run busybox --image=busybox --env="NGINX_IP=$NGINX_PODIP" --rm -it --restart=Never -- sh -c 'wget -O- $NGINX_IP:80'
 
+# collect failed pods namespace by namespace
 
+kubectl get events -o json | jq -r '.items[] | select(.message | contains("failed liveness probe")).involvedObject | .namespace +
+
+# run shell
+ kubectl run busybox --image=busybox --restart=Never -it --rm -- sh
 
 
 
